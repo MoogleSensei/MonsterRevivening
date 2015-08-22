@@ -18,10 +18,11 @@ end
 
 function MenuState:draw()
 	love.graphics.setColor(255,255,255)
-	love.graphics.print('Menu State',0,0)
 	for i,button in ipairs(arrayButtons) do
 		love.graphics.draw(button.image,button.x,button.y)
 	end
+	love.graphics.setColor(255,0,0)
+	love.graphics.print('Menu State',0,0)
 end
 
 function MenuState:exitMenu()
