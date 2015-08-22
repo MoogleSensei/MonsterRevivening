@@ -3,7 +3,7 @@
 -- You are the Monster
 --
 -- Written by Sean Miller
--- 08/21/2015
+-- 08/22/2015
 --
 -- This is my 48 hour Ludum Dare 33 Compo entry.
 -- It's for my second ever Ludum Dare!
@@ -12,6 +12,8 @@ class				= require('hump/class')
 GameState 			= require('hump/gamestate')
 local LevelState	= require('states/levelState')
 local MenuState 	= require('states/menuState')
+volumesList			= {[0] = 0, [1] = 0.1, [2] = 0.2, [3] = 0.3}
+volume				= 5	-- Initially volume set at 50%
 
 function love.load()
 	GameState.registerEvents()

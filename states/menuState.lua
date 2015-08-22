@@ -29,10 +29,6 @@ function MenuState:exitMenu()
 	GameState.pop()
 end
 
-function MenuState:keyreleased(key)
-	-- if key == 'escape'	then self:exitMenu() end
-end
-
 function MenuState:mousereleased(x, y, mouseButton)
 	if mouseButton == 'l' then
 		for i,button in ipairs(arrayButtons) do
