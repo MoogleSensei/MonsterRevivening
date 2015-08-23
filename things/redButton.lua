@@ -8,7 +8,5 @@ local redButton = {
 }
 redButton.width 	= redButton.image:getWidth()
 redButton.height 	= redButton.image:getHeight()
-redButton.x		= love.graphics:getWidth()/2 - redButton.width/2
-redButton.y		= love.graphics:getHeight()/2 - redButton.height/2
 
 return redButton

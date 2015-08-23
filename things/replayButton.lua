@@ -8,7 +8,5 @@ local replayButton = {
 }
 replayButton.width 	= replayButton.image:getWidth()
 replayButton.height = replayButton.image:getHeight()
-replayButton.x		= love.graphics:getWidth()/2 - replayButton.width/2
-replayButton.y		= love.graphics:getHeight()/2 - replayButton.height/2
 
 return replayButton

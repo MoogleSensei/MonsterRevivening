@@ -16,36 +16,102 @@ function LevelState:enter(previous, level, monsterColour)
     self.gaugeGraphic = love.graphics.newImage('assets/gauge.png')
     self.monsterColour = monsterColour
     self.level = level
+    self.isBusted = false
+    self.bustedTimer = 0
     for i=1,5*level do
         self.enemies[i] = Sleeper(self.map:getWidth(),self.map:getHeight())
     end
-    if monsterColour == "blue" then
+    if monsterColour == 'blue' then
         self.monster.image = love.graphics.newImage('assets/blueMonster.png')
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
+        self.defaultFizzSprayRate = -10
         self.fizzChargeRate = -6
         self.fizzMaxSafe = 1000
         self.fizzMax = 1250
         self.sprayRange = 768
         self.angleRange = math.pi/8
-    elseif monsterColour == "red" then
+        self.caffeineContent = 1
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'red' then
         self.monster.image = love.graphics.newImage('assets/redMonster.png')
         self.fizzCharge = 0
-        self.defaultFizzChargeRate = 6
+        self.defaultFizzChargeRate = 4
+        self.defaultFizzSprayRate = -10
         self.fizzChargeRate = -6
-        self.fizzMaxSafe = 1500
-        self.fizzMax = 2000
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
         self.sprayRange = 512
         self.angleRange = math.pi/16
-    else
+        self.caffeineContent = 5
+        self.canLoseFizzNaturally = false
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'green' then
         self.monster.image = love.graphics.newImage('assets/greenMonster.png')
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 10
+        self.defaultFizzSprayRate = -10
         self.fizzChargeRate = -10
         self.fizzMaxSafe = 1000
         self.fizzMax = 1250
         self.sprayRange = 512
         self.angleRange = math.pi/16
+        self.caffeineContent = 1
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'orange' then
+        self.monster.image = love.graphics.newImage('assets/orangeMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 4
+        self.defaultFizzSprayRate = -3
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1100
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
+        self.caffeineContent = 1
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'purple' then
+        self.monster.image = love.graphics.newImage('assets/purpleMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.defaultFizzSprayRate = -10
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
+        self.caffeineContent = 1
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 100
+    elseif monsterColour == 'yellow' then
+        self.monster.image = love.graphics.newImage('assets/yellowMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.defaultFizzSprayRate = -10
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 2250
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
+        self.caffeineContent = 1
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'white' then
+        self.monster.image = love.graphics.newImage('assets/whiteMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.defaultFizzSprayRate = -10
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
+        self.caffeineContent = 0.25
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
     end
 end
 
@@ -64,7 +130,6 @@ function LevelState:update(dt)
         end
     end
     if next(self.enemies) == nil then
-        -- print("A winner is you")
         GameState.switch(VictoryState,self.level+1,self.monsterColour)
     end
     self:fizzCheck(dt)
@@ -77,33 +142,46 @@ function LevelState:update(dt)
 end
 
 function LevelState:fizzCheck(dt)
-    if self.firing and 0 < self.fizzCharge then
-        self.fizzChargeRate = -10
-        self:checkEnemySprayed()
+    if self.isBusted then
+        self.bustedTimer = self.bustedTimer + 1
+        if self.timeToRecoverFromBust <= self.bustedTimer then
+            self.isBusted = false
+        end
     else
-        if 100 <= self.lastKeyTimer then
-            self.fizzChargeRate = -self.defaultFizzChargeRate
-        elseif 30 <= self.lastKeyTimer then
-            self.fizzChargeRate = 0
+        if self.firing and 0 < self.fizzCharge then
+            self.fizzChargeRate = self.defaultFizzSprayRate
+            self:checkEnemySprayed()
+        else
+            if 100 <= self.lastKeyTimer then
+                if not(self.canLoseFizzNaturally) then
+                    self.fizzChargeRate = 0
+                else
+                    self.fizzChargeRate = -self.defaultFizzChargeRate
+                end
+            elseif 30 <= self.lastKeyTimer then
+                self.fizzChargeRate = 0
+            end
+            if math.pi/4 <= math.abs(self.monster.theta - self.previousAngle) then
+                self.fizzChargeRate = self.defaultFizzChargeRate
+                self.lastKeyTimer = 0
+            end
         end
-        if math.pi/4 <= math.abs(self.monster.theta - self.previousAngle) then
-            self.fizzChargeRate = self.defaultFizzChargeRate
-            self.lastKeyTimer = 0
+        self.fizzCharge = self.fizzCharge + self.fizzChargeRate
+        if self.fizzCharge <= 0 then
+            self.fizzCharge = 0
+        elseif self.fizzMax <= self.fizzCharge then
+            self.fizzCharge = 0
+            self.isBusted = true
+            self.bustedTimer = 0
         end
-    end
-    self.fizzCharge = self.fizzCharge + self.fizzChargeRate
-    if self.fizzCharge <= 0 then
-        self.fizzCharge = 0
-    elseif self.fizzMax <= self.fizzCharge then
-        self.fizzCharge = self.fizzMax
-    end
-    self.fizzPercent = self.fizzCharge/self.fizzMaxSafe
-    self.fizzPercentDanger = (self.fizzCharge-self.fizzMaxSafe)/(self.fizzMax-self.fizzMaxSafe)
-    if self.fizzPercentDanger <= 0 then
-        self.fizzPercentDanger = 0
-    end
-    if 1 <= self.fizzPercent then
-        self.fizzPercent = 1
+        self.fizzPercent = self.fizzCharge/self.fizzMaxSafe
+        self.fizzPercentDanger = (self.fizzCharge-self.fizzMaxSafe)/(self.fizzMax-self.fizzMaxSafe)
+        if self.fizzPercentDanger <= 0 then
+            self.fizzPercentDanger = 0
+        end
+        if 1 <= self.fizzPercent then
+            self.fizzPercent = 1
+        end
     end
 end
 
@@ -180,7 +258,7 @@ function LevelState:checkEnemySprayed()
                 if enemyAngle <= -math.pi then
                     enemyAngle = enemyAngle + 2*math.pi
                 end
-                enemy:getSprayed(self.fizzPercent+self.fizzPercentDanger,enemyAngle)
+                enemy:getSprayed(self.fizzPercent+self.fizzPercentDanger,enemyAngle,self.caffeineContent)
             end
         end
     end

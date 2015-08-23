@@ -8,7 +8,5 @@ local continueButton = {
 }
 continueButton.width 	= continueButton.image:getWidth()
 continueButton.height 	= continueButton.image:getHeight()
-continueButton.x		= love.graphics:getWidth()/2 - continueButton.width/2
-continueButton.y		= love.graphics:getHeight()/2 - continueButton.height/2
 
 return continueButton

@@ -79,8 +79,8 @@ local Sleeper	  = class({
         self.x = self.x + offsetX
         self.y = self.y + offsetY
     end,
-    getSprayed = function(self, sprayLevel, sprayAngle)
-        self.caffeine = self.caffeine + 5*sprayLevel
+    getSprayed = function(self, sprayLevel, sprayAngle, caffeineContent)
+        self.caffeine = self.caffeine + caffeineContent
         if self.caffeine <= 20 then
             self.energy = 'asleep'
         elseif 200 <= self.caffeine then

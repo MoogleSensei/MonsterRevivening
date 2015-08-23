@@ -8,7 +8,5 @@ local chooseButton = {
 }
 chooseButton.width 	= chooseButton.image:getWidth()
 chooseButton.height 	= chooseButton.image:getHeight()
-chooseButton.x		= love.graphics:getWidth()/2 - chooseButton.width/2
-chooseButton.y		= love.graphics:getHeight()/2 - chooseButton.height/2
 
 return chooseButton
