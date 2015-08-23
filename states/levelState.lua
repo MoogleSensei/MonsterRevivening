@@ -23,6 +23,7 @@ function LevelState:enter(previous, level, monsterColour)
     end
     if monsterColour == 'blue' then
         self.monster.image = love.graphics.newImage('assets/blueMonster.png')
+        self.monsterColourColor = {0,162,232}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
         self.defaultFizzSprayRate = -10
@@ -36,6 +37,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'red' then
         self.monster.image = love.graphics.newImage('assets/redMonster.png')
+        self.monsterColourColor = {237,28,36}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 4
         self.defaultFizzSprayRate = -10
@@ -49,6 +51,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'green' then
         self.monster.image = love.graphics.newImage('assets/greenMonster.png')
+        self.monsterColourColor = {181,230,29}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 10
         self.defaultFizzSprayRate = -10
@@ -62,6 +65,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'orange' then
         self.monster.image = love.graphics.newImage('assets/orangeMonster.png')
+        self.monsterColourColor = {255,127,39}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 4
         self.defaultFizzSprayRate = -3
@@ -75,6 +79,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'purple' then
         self.monster.image = love.graphics.newImage('assets/purpleMonster.png')
+        self.monsterColourColor = {163,73,164}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
         self.defaultFizzSprayRate = -10
@@ -88,6 +93,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 100
     elseif monsterColour == 'yellow' then
         self.monster.image = love.graphics.newImage('assets/yellowMonster.png')
+        self.monsterColourColor = {255,242,0}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
         self.defaultFizzSprayRate = -10
@@ -101,6 +107,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'white' then
         self.monster.image = love.graphics.newImage('assets/whiteMonster.png')
+        self.monsterColourColor = {255,255,255}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
         self.defaultFizzSprayRate = -10
@@ -122,6 +129,7 @@ function LevelState:update(dt)
     if love.keyboard.isDown('a') or love.keyboard.isDown('left')    then self.monster:moveMonster('left') end
     if love.keyboard.isDown('s') or love.keyboard.isDown('down')    then self.monster:moveMonster('down') end
     if love.keyboard.isDown('d') or love.keyboard.isDown('right')   then self.monster:moveMonster('right') end
+    self:checkEnemyCollides()
     self:checkBounds()
     for i,enemy in ipairs(self.enemies) do
         enemy:update(dt)
@@ -143,6 +151,11 @@ end
 
 function LevelState:fizzCheck(dt)
     if self.isBusted then
+        self.firing = false
+        self.fizzCharge = self.fizzMax*(1-(self.bustedTimer/self.timeToRecoverFromBust))
+        if self.fizzCharge <= 0 then
+            self.fizzCharge = 0
+        end
         self.bustedTimer = self.bustedTimer + 1
         if self.timeToRecoverFromBust <= self.bustedTimer then
             self.isBusted = false
@@ -170,18 +183,18 @@ function LevelState:fizzCheck(dt)
         if self.fizzCharge <= 0 then
             self.fizzCharge = 0
         elseif self.fizzMax <= self.fizzCharge then
-            self.fizzCharge = 0
+            self.fizzChargeRate = -3*self.defaultFizzChargeRate
             self.isBusted = true
             self.bustedTimer = 0
         end
-        self.fizzPercent = self.fizzCharge/self.fizzMaxSafe
-        self.fizzPercentDanger = (self.fizzCharge-self.fizzMaxSafe)/(self.fizzMax-self.fizzMaxSafe)
-        if self.fizzPercentDanger <= 0 then
-            self.fizzPercentDanger = 0
-        end
-        if 1 <= self.fizzPercent then
-            self.fizzPercent = 1
-        end
+    end
+    self.fizzPercent = self.fizzCharge/self.fizzMaxSafe
+    self.fizzPercentDanger = (self.fizzCharge-self.fizzMaxSafe)/(self.fizzMax-self.fizzMaxSafe)
+    if self.fizzPercentDanger <= 0 then
+        self.fizzPercentDanger = 0
+    end
+    if 1 <= self.fizzPercent then
+        self.fizzPercent = 1
     end
 end
 
@@ -201,13 +214,7 @@ function LevelState:draw()
                             w+self.sprayRange*math.cos(t-self.angleRange),h+self.sprayRange*math.sin(t-self.angleRange),
                             w+self.sprayRange*math.cos(t+self.angleRange),h+self.sprayRange*math.sin(t+self.angleRange),
                         }
-        if self.monsterColour == 'blue' then
-            love.graphics.setColor(0,0,255)
-        elseif self.monsterColour == 'red' then
-            love.graphics.setColor(255,0,0)
-        else
-            love.graphics.setColor(0,255,0)
-        end
+        love.graphics.setColor(self.monsterColourColor)
         love.graphics.polygon('fill',sprayVertices)
     end
     love.graphics.setColor(255,255,255)
@@ -217,14 +224,18 @@ function LevelState:draw()
 end
 
 function LevelState:drawGauge(currentFizz,maxFizz)
-    love.graphics.setColor(255,255,255)
+    love.graphics.setColor({255,255,255})
     local gaugeX, gaugeY = love.graphics:getWidth()/2-128,love.graphics:getHeight()-64
     local gaugeWidth, gaugeHeight = self.gaugeGraphic:getWidth(),self.gaugeGraphic:getHeight()
     love.graphics.rectangle("fill",gaugeX,gaugeY,gaugeWidth,gaugeHeight)
-    if 1 <= self.fizzPercent then
+    if self.isBusted then
         love.graphics.setColor(255,0,0)
     else
-        love.graphics.setColor(0,255,0)
+        if 1 <= self.fizzPercent then
+            love.graphics.setColor(255,0,0)
+        else
+            love.graphics.setColor(0,255,0)
+        end
     end
     love.graphics.rectangle("fill",gaugeX,gaugeY,self.fizzPercent*200 + self.fizzPercentDanger*56,gaugeHeight)
     love.graphics.setColor(255,255,255)
@@ -241,6 +252,29 @@ function LevelState:checkBounds()
         self.monster.y = 0
     elseif self.map:getHeight() <= self.monster.y then
         self.monster.y = self.map:getHeight()
+    end
+end
+
+function LevelState:checkEnemyCollides()
+    for i,enemy in ipairs(self.enemies) do
+        local onScreenX,onScreenY = enemy.x-self.cam.x+love.graphics:getWidth()/2,enemy.y-self.cam.y+love.graphics:getHeight()/2
+        if 0 <= onScreenX+enemy.width/2 and onScreenX-enemy.width/2 <= love.graphics:getWidth() and 0 <= onScreenY+enemy.height/2 and onScreenY-enemy.height/2 <= love.graphics:getHeight() then
+            local enemyAngle = math.angle(love.graphics:getWidth()/2,love.graphics:getHeight()/2,onScreenX,onScreenY)+math.pi/2
+            if math.pi <= enemyAngle then
+                enemyAngle = enemyAngle - 2*math.pi
+            end
+            local enemyDist = math.dist(onScreenX,onScreenY,love.graphics:getWidth()/2,love.graphics:getHeight()/2)
+            -- if self.monster.theta - self.angleRange <= enemyAngle and enemyAngle <= self.monster.theta + self.angleRange and enemyDist <= self.sprayRange then
+            if enemyDist <= 1.25*self.monster.width/2 + enemy.width/2 then
+                local jumpbackAngle = enemyAngle-math.pi/2
+                jumpbackAngle = jumpbackAngle - math.pi
+                if jumpbackAngle <= -math.pi then
+                    jumpbackAngle = jumpbackAngle + 2*math.pi
+                end
+                self.monster:jumpBack(20,jumpbackAngle)
+            end
+            -- end
+        end
     end
 end
 

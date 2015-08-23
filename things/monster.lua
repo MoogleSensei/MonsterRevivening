@@ -21,6 +21,12 @@ function Monster:pointMonsterToMouse()
     end
 end
 
+function Monster:jumpBack(jumpAmount, jumpAngle)
+    local jumpX,jumpY = jumpAmount*math.cos(jumpAngle),jumpAmount*math.sin(jumpAngle)
+    Monster.x = Monster.x+jumpX
+    Monster.y = Monster.y+jumpY
+end
+
 function Monster:moveMonster(dir)
     if dir == 'up' then
         Monster.y = Monster.y - 10
