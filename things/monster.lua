@@ -6,6 +6,7 @@ Monster.y = love.graphics:getHeight()/2
 Monster.firing = false
 Monster.theta = 0
 Monster.image = love.graphics.newImage('assets/greenMonster.png')
+Monster.oldImage = love.graphics.newImage('assets/greenMonster.png')
 Monster.width = Monster.image:getWidth()
 Monster.height = Monster.image:getHeight()
 

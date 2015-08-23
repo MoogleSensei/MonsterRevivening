@@ -4,19 +4,127 @@
 		"selected_items":
 		[
 			[
+				"main",
+				"mainMenuButton"
+			],
+			[
+				"fiz",
+				"fizzMax"
+			],
+			[
+				"fizz",
+				"fizzCharge"
+			],
+			[
+				"check",
+				"checkEnemyCollides"
+			],
+			[
+				"jump",
+				"jumpbackAngle"
+			],
+			[
+				"mons",
+				"monster"
+			],
+			[
+				"mon",
+				"monsterColour"
+			],
+			[
+				"is",
+				"isBusted"
+			],
+			[
+				"def",
+				"defaultFizzSprayRate"
+			],
+			[
+				"back",
+				"backButton"
+			],
+			[
+				"Vic",
+				"victoryState"
+			],
+			[
+				"Menu",
+				"menuState"
+			],
+			[
+				"vic",
+				"victory"
+			],
+			[
+				"col",
+				"monsterColour"
+			],
+			[
+				"victory",
+				"victoryState"
+			],
+			[
+				"spray",
+				"sprayRange"
+			],
+			[
+				"monster",
+				"monsterColour"
+			],
+			[
+				"angle",
+				"angleRange"
+			],
+			[
 				"onsc",
 				"onScreenY"
 			],
 			[
+				"g",
+				"graphics"
+			],
+			[
+				"prev",
+				"previousAngle"
+			],
+			[
+				"falling",
+				"fallingOff"
+			],
+			[
+				"fall",
+				"fallingOffOdds"
+			],
+			[
+				"time",
+				"timeToMove"
+			],
+			[
+				"move",
+				"moveAmount"
+			],
+			[
+				"y",
+				"y"
+			],
+			[
+				"offset",
+				"offsetX"
+			],
+			[
+				"fizzp",
+				"fizzPercent"
+			],
+			[
+				"spra",
+				"sprayLevel"
+			],
+			[
+				"enemy",
+				"enemyAngle"
+			],
+			[
 				"monst",
-				"Monster"
-			],
-			[
-				"mons",
-				"Monster"
-			],
-			[
-				"mon",
 				"Monster"
 			],
 			[
@@ -24,24 +132,12 @@
 				"onScreenX"
 			],
 			[
-				"fizzp",
-				"fizzPercentDanger"
-			],
-			[
 				"fizzper",
 				"fizzPercentDanger"
 			],
 			[
-				"fizz",
-				"fizzMax"
-			],
-			[
 				"gauge",
 				"gaugeGraphic"
-			],
-			[
-				"fiz",
-				"fizzMax"
 			],
 			[
 				"get",
@@ -70,10 +166,6 @@
 			[
 				"conti",
 				"continueButton"
-			],
-			[
-				"monster",
-				"monsterColour"
 			]
 		]
 	},
@@ -83,31 +175,7 @@
 			"file": "main.lua",
 			"settings":
 			{
-				"buffer_size": 965,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "states/levelState.lua",
-			"settings":
-			{
-				"buffer_size": 5783,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "things/monster.lua",
-			"settings":
-			{
-				"buffer_size": 1241,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "things/sleeper.lua",
-			"settings":
-			{
-				"buffer_size": 851,
+				"buffer_size": 1210,
 				"line_ending": "Windows"
 			}
 		}
@@ -156,13 +224,34 @@
 	},
 	"file_history":
 	[
-		"/C/Users/millersm/Desktop/monsterrevivening/states/menuState.lua",
-		"/C/Users/millersm/Desktop/monsterrevivening/things/quitButton.lua",
-		"/C/Users/millersm/Desktop/monsterrevivening/things/continueButton.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/things/monster.lua",
-		"/C/Users/millersm/Desktop/WhatLurksInDarkness/main.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/levelState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/nextLevelState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/victoryState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/startScreenState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/sleeper.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/chooseColorState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/howToState.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/main.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/states/menuState.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/mainMenuButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/javaButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/whiteButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/yellowButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/purpleButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/orangeButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/replayButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/quitButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/playButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/howToButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/greenButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/continueButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/chooseButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/blueButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/backButton.lua",
+		"/C/Users/millersm/Desktop/monsterrevivening/things/redButton.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/conf.lua",
+		"/C/Users/millersm/Desktop/WhatLurksInDarkness/main.lua",
 		"/C/Users/millersm/Desktop/WhatLurksInDarkness/conf.lua",
 		"/C/Users/millersm/Desktop/LudumPractice/quitButton.lua",
 		"/C/Users/millersm/Desktop/LudumPractice/continueButton.lua",
@@ -202,6 +291,25 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Victory",
+			"howTo",
+			"sprayImage",
+			"red",
+			"play",
+			"continue",
+			"quit",
+			"ChooseColor",
+			"play",
+			"red",
+			"blue",
+			"continueButton",
+			"continue",
+			"MenuState",
+			"self.victory",
+			"self.menu",
+			"MenuState",
+			"monsterColour",
+			"firing",
 			"math.angle",
 			"Monster",
 			"self",
@@ -245,104 +353,20 @@
 					"file": "main.lua",
 					"settings":
 					{
-						"buffer_size": 965,
+						"buffer_size": 1210,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								100,
-								100
+								110,
+								110
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Lua/Lua.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "states/levelState.lua",
-					"settings":
-					{
-						"buffer_size": 5783,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3821,
-								3821
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2716.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "things/monster.lua",
-					"settings":
-					{
-						"buffer_size": 1241,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								705,
-								705
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 336.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "things/sleeper.lua",
-					"settings":
-					{
-						"buffer_size": 851,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								25,
-								25
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

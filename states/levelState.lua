@@ -1,12 +1,13 @@
 local LevelState    = class({})
 local Sleeper       = require('things/sleeper')
 
-function LevelState:enter(previous, level, monsterColour)
+function LevelState:enter(previous, level, monsterColour, score)
+    self.score = score
     self.lastKeyTimer = 0
     self.monster = require('things/monster')
     self.monster.x = love.graphics:getWidth()/2
     self.monster.y = love.graphics:getHeight()/2
-    self.map = love.graphics.newImage('assets/ludumDare33.png')
+    self.map = love.graphics.newImage('assets/arena.png')
     local Camera = require('hump/camera')
     self.cam = Camera(self.monster.x,self.monster.y)
     self.enemies = {}
@@ -23,6 +24,7 @@ function LevelState:enter(previous, level, monsterColour)
     end
     if monsterColour == 'blue' then
         self.monster.image = love.graphics.newImage('assets/blueMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/blueMonster.png')
         self.monsterColourColor = {0,162,232}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
@@ -37,6 +39,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'red' then
         self.monster.image = love.graphics.newImage('assets/redMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/redMonster.png')
         self.monsterColourColor = {237,28,36}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 4
@@ -46,11 +49,12 @@ function LevelState:enter(previous, level, monsterColour)
         self.fizzMax = 1250
         self.sprayRange = 512
         self.angleRange = math.pi/16
-        self.caffeineContent = 5
+        self.caffeineContent = 1
         self.canLoseFizzNaturally = false
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'green' then
         self.monster.image = love.graphics.newImage('assets/greenMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/greenMonster.png')
         self.monsterColourColor = {181,230,29}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 10
@@ -65,13 +69,14 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'orange' then
         self.monster.image = love.graphics.newImage('assets/orangeMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/orangeMonster.png')
         self.monsterColourColor = {255,127,39}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 4
         self.defaultFizzSprayRate = -3
         self.fizzChargeRate = -10
         self.fizzMaxSafe = 1000
-        self.fizzMax = 1100
+        self.fizzMax = 1250
         self.sprayRange = 512
         self.angleRange = math.pi/16
         self.caffeineContent = 1
@@ -79,6 +84,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'purple' then
         self.monster.image = love.graphics.newImage('assets/purpleMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/purpleMonster.png')
         self.monsterColourColor = {163,73,164}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
@@ -93,6 +99,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 100
     elseif monsterColour == 'yellow' then
         self.monster.image = love.graphics.newImage('assets/yellowMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/yellowMonster.png')
         self.monsterColourColor = {255,242,0}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
@@ -107,6 +114,7 @@ function LevelState:enter(previous, level, monsterColour)
         self.timeToRecoverFromBust = 200
     elseif monsterColour == 'white' then
         self.monster.image = love.graphics.newImage('assets/whiteMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/whiteMonster.png')
         self.monsterColourColor = {255,255,255}
         self.fizzCharge = 0
         self.defaultFizzChargeRate = 6
@@ -117,6 +125,21 @@ function LevelState:enter(previous, level, monsterColour)
         self.sprayRange = 512
         self.angleRange = math.pi/16
         self.caffeineContent = 0.25
+        self.canLoseFizzNaturally = true
+        self.timeToRecoverFromBust = 200
+    elseif monsterColour == 'java' then
+        self.monster.image = love.graphics.newImage('assets/javaMonster.png')
+        self.monster.oldImage = love.graphics.newImage('assets/javaMonster.png')
+        self.monsterColourColor = {239,228,176}
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.defaultFizzSprayRate = -10
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
+        self.caffeineContent = 5
         self.canLoseFizzNaturally = true
         self.timeToRecoverFromBust = 200
     end
@@ -131,19 +154,32 @@ function LevelState:update(dt)
     if love.keyboard.isDown('d') or love.keyboard.isDown('right')   then self.monster:moveMonster('right') end
     self:checkEnemyCollides()
     self:checkBounds()
+    if self.isBusted then
+        self.monster.image = love.graphics.newImage('assets/bustedMonster.png')
+    else
+        self.monster.image = self.monster.oldImage
+    end
     for i,enemy in ipairs(self.enemies) do
         enemy:update(dt)
         if not(enemy.isAlive) then
+            self.score = self.score + 100
             table.remove(self.enemies,i)
         end
     end
     if next(self.enemies) == nil then
-        GameState.switch(VictoryState,self.level+1,self.monsterColour)
+        if self.level == 5 then
+            self.score = self.score + 1000
+            GameState.switch(VictoryState,self.score)
+        else
+            self.score = self.score + 1000
+            GameState.switch(NextLevelState,self.level+1,self.monsterColour,self.score)
+        end
     end
     self:fizzCheck(dt)
     self.cam:lookAt(self.monster.x,self.monster.y)
     if self.angleTimer == 5 then
         self.previousAngle = self.monster.theta
+        -- self.score = self.score + 1
         self.angleTimer = 0
     end
     self.angleTimer = self.angleTimer + 1
@@ -220,7 +256,8 @@ function LevelState:draw()
     love.graphics.setColor(255,255,255)
     self:drawGauge(self.fizzCharge,self.fizzMax)
     love.graphics.setColor(0,255,0)
-    love.graphics.print("LEVEL "..self.level,0,0)
+    love.graphics.print("LEVEL "..self.level,0,0,0,1.5)
+    love.graphics.print("TOTAL SCORE: "..self.score,0,32,0,1.5)
 end
 
 function LevelState:drawGauge(currentFizz,maxFizz)
@@ -264,7 +301,6 @@ function LevelState:checkEnemyCollides()
                 enemyAngle = enemyAngle - 2*math.pi
             end
             local enemyDist = math.dist(onScreenX,onScreenY,love.graphics:getWidth()/2,love.graphics:getHeight()/2)
-            -- if self.monster.theta - self.angleRange <= enemyAngle and enemyAngle <= self.monster.theta + self.angleRange and enemyDist <= self.sprayRange then
             if enemyDist <= 1.25*self.monster.width/2 + enemy.width/2 then
                 local jumpbackAngle = enemyAngle-math.pi/2
                 jumpbackAngle = jumpbackAngle - math.pi
@@ -272,8 +308,9 @@ function LevelState:checkEnemyCollides()
                     jumpbackAngle = jumpbackAngle + 2*math.pi
                 end
                 self.monster:jumpBack(20,jumpbackAngle)
+                self.fizzCharge = 0
+                self.score = self.score - 1
             end
-            -- end
         end
     end
 end
@@ -292,7 +329,7 @@ function LevelState:checkEnemySprayed()
                 if enemyAngle <= -math.pi then
                     enemyAngle = enemyAngle + 2*math.pi
                 end
-                enemy:getSprayed(self.fizzPercent+self.fizzPercentDanger,enemyAngle,self.caffeineContent)
+                enemy:getSprayed(2*(self.fizzPercent+self.fizzPercentDanger),enemyAngle,self.caffeineContent)
             end
         end
     end

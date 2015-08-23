@@ -43,11 +43,11 @@ function ChooseColorState:draw()
 	elseif self.monsterColour == 'green' then
 		colourDescription = "Green Monster:\n fizzes up faster than other colors"
 	elseif self.monsterColour == 'orange' then
-		colourDescription = "orange Monster:\n fizzes up slightly slower, but sprays\n much slower than other colors"
+		colourDescription = "Orange Monster:\n fizzes up slightly slower, but sprays\n much slower than other colors"
 	elseif self.monsterColour == 'purple' then
-		colourDescription = "purple Monster:\n recovers much faster than other colors\n after exploding"
+		colourDescription = "Purple Monster:\n recovers much faster than other colors\n after exploding"
 	elseif self.monsterColour == 'yellow' then
-		colourDescription = "yellow Monster:\n fizzes up just as fast as other colors,\n but takes much more pressure to explode"
+		colourDescription = "Yellow Monster:\n fizzes up just as fast as other colors,\n but takes much more pressure to explode"
 	elseif self.monsterColour == 'white' then
 		colourDescription = "White Monster:\n does not contain as much caffeine\n as other colors"
 	elseif self.monsterColour == 'java' then
@@ -55,7 +55,6 @@ function ChooseColorState:draw()
 	end
 	love.graphics.setColor(255,255,255)
 	love.graphics.print(colourDescription,196,love.graphics:getHeight()-192,0,2,2)
-	love.graphics.print("Choose Color State")
 end
 
 function ChooseColorState:mousereleased(x, y, mouseButton)
@@ -63,7 +62,7 @@ function ChooseColorState:mousereleased(x, y, mouseButton)
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
 				if button.name == 'choose' then
-					GameState.switch(LevelState,1,self.monsterColour)
+					GameState.switch(LevelState,1,self.monsterColour,0)
 				elseif button.name == 'back' then
 					GameState.switch(StartScreenState)
 				else

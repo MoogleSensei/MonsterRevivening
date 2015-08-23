@@ -1,12 +1,13 @@
 local StartScreenState		= class({})
 
-local playButton				= require('things/playButton')
-local howToButton				= require('things/howToButton')
-local quitButton				= require('things/quitButton')
-local arrayButtons				= {playButton,howToButton,quitButton}
+local playButton			= require('things/playButton')
+local howToButton			= require('things/howToButton')
+local quitButton			= require('things/quitButton')
+local arrayButtons			= {playButton,howToButton,quitButton}
+local startScreen			= love.graphics.newImage('assets/startScreen.png')
 
 function StartScreenState:enter()
-	local yCoord = love.graphics:getHeight()/2
+	local yCoord = love.graphics:getHeight()/2+64
 	for i,button in ipairs(arrayButtons) do
 		button.x,button.y = 64,yCoord
 		yCoord = yCoord + 1.5*button.height
@@ -15,11 +16,10 @@ end
 
 function StartScreenState:draw()
 	love.graphics.setColor(255,255,255)
+	love.graphics.draw(startScreen,0,0)
 	for i,button in ipairs(arrayButtons) do
 		love.graphics.draw(button.image,button.x,button.y)
 	end
-	love.graphics.setColor(255,255,255)
-	love.graphics.print("Start Screen State")
 end
 
 function StartScreenState:mousereleased(x, y, mouseButton)
