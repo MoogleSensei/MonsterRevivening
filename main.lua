@@ -3,21 +3,25 @@
 -- You are the Monster
 --
 -- Written by Sean Miller
--- 08/22/2015
+-- 08/21/2015
 --
 -- This is my 48 hour Ludum Dare 33 Compo entry.
 -- It's for my second ever Ludum Dare!
 -- This game is an entirely satirical work, I have no stock in and am in no way related to Monster energy drink.
 class				= require('hump/class')
 GameState 			= require('hump/gamestate')
-local LevelState	= require('states/levelState')
-local MenuState 	= require('states/menuState')
+StartScreenState 	= require('states/startScreenState')
+HowToState 			= require('states/howToState')
+ChooseColorState 	= require('states/chooseColorState')
+LevelState			= require('states/levelState')
+MenuState 			= require('states/menuState')
+VictoryState 		= require('states/victoryState')
 volumesList			= {[0] = 0, [1] = 0.1, [2] = 0.2, [3] = 0.3}
 volume				= 5	-- Initially volume set at 50%
 
 function love.load()
 	GameState.registerEvents()
-	GameState.switch(LevelState,MenuState)
+	GameState.switch(StartScreenState)
 end
 
 function love.draw()

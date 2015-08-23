@@ -1,12 +1,10 @@
-local MenuState			= class({})
+local VictoryState	= class({})
 
-local continueButton	= require('things/continueButton')
+local replayButton		= require('things/replayButton')
 local quitButton		= require('things/quitButton')
--- local volumeUpButton	= require('things/volumeUpButton')
--- local volumeDownButton	= require('things/volumeDownButton')
-local arrayButtons		= {continueButton,quitButton}
+local arrayButtons		= {replayButton, quitButton}
 
-function MenuState:enter()
+function VictoryState:enter()
 	local yCoord = love.graphics:getHeight()/2
 	for i,button in ipairs(arrayButtons) do
 		button.x,button.y = 64,yCoord
@@ -14,21 +12,21 @@ function MenuState:enter()
 	end
 end
 
-function MenuState:draw()
+function VictoryState:draw()
 	love.graphics.setColor(255,255,255)
 	for i,button in ipairs(arrayButtons) do
 		love.graphics.draw(button.image,button.x,button.y)
 	end
 	love.graphics.setColor(255,255,255)
-	love.graphics.print("Menu State")
+	love.graphics.print("Victory State")
 end
 
-function MenuState:mousereleased(x, y, mouseButton)
+function VictoryState:mousereleased(x, y, mouseButton)
 	if mouseButton == 'l' then
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
-				if button.name == 'continue' then
-					GameState.pop()
+				if button.name == 'replay' then
+					GameState.switch(StartScreenState)
 				end
 				if button.name == 'quit' then
 					love.event.quit()
@@ -38,4 +36,4 @@ function MenuState:mousereleased(x, y, mouseButton)
 	end
 end
 
-return MenuState
+return VictoryState

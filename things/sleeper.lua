@@ -12,6 +12,13 @@ local Sleeper	  = class({
     end,
     update = function(self,dt)
         if self.isAlive then
+            if self.energy == 'crazed' then
+                self.image = love.graphics.newImage('assets/crazedSleeper.png')
+            elseif self.energy == 'awake' then
+                self.image = love.graphics.newImage('assets/awakeSleeper.png')
+            elseif self.energy == 'asleep' then
+                self.image = love.graphics.newImage('assets/sleeper.png')
+            end
             if not(self.energy == 'asleep') then
                 if self.moveTimer <= self.timeToStopMove then
                     if self.energy == 'crazed' then
@@ -62,6 +69,8 @@ local Sleeper	  = class({
             end
             self.moveTimer = self.moveTimer + 1
             self.isBeingSprayed = false
+        else
+            self.image = love.graphics.newImage('assets/fallenSleeper.png')
         end
     end,
     moveSleeper = function(self, amount, angle)

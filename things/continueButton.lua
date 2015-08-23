@@ -1,6 +1,6 @@
 local continueButton = {
 	name		= 'continue',
-	image		= love.graphics.newImage('assets/playButton.png'),
+	image		= love.graphics.newImage('assets/continueButton.png'),
 	width		= 0,
 	height		= 0,
 	x			= 0,

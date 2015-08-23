@@ -1,8 +1,7 @@
 local LevelState    = class({})
 local Sleeper       = require('things/sleeper')
 
-function LevelState:init()
-    self.level = 0
+function LevelState:enter(previous, level, monsterColour)
     self.lastKeyTimer = 0
     self.monster = require('things/monster')
     self.monster.x = love.graphics:getWidth()/2
@@ -11,25 +10,42 @@ function LevelState:init()
     local Camera = require('hump/camera')
     self.cam = Camera(self.monster.x,self.monster.y)
     self.enemies = {}
-    self.fizzCharge = 0
-    self.fizzChargeRate = -2
-    self.fizzMaxSafe = 1000
-    self.fizzMax = 1250
     self.firing = false
-    for i=1,20 do
+    self.previousAngle = 0
+    self.angleTimer = 0
+    self.gaugeGraphic = love.graphics.newImage('assets/gauge.png')
+    self.monsterColour = monsterColour
+    self.level = level
+    for i=1,5*level do
         self.enemies[i] = Sleeper(self.map:getWidth(),self.map:getHeight())
     end
-    self.gaugeGraphic = love.graphics.newImage('assets/gauge.png')
-end
-
-function LevelState:enter(previous, menuState, monsterColour)
-    self.menu = menuState
     if monsterColour == "blue" then
-
+        self.monster.image = love.graphics.newImage('assets/blueMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.fizzChargeRate = -6
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
+        self.sprayRange = 768
+        self.angleRange = math.pi/8
     elseif monsterColour == "red" then
-
+        self.monster.image = love.graphics.newImage('assets/redMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 6
+        self.fizzChargeRate = -6
+        self.fizzMaxSafe = 1500
+        self.fizzMax = 2000
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
     else
         self.monster.image = love.graphics.newImage('assets/greenMonster.png')
+        self.fizzCharge = 0
+        self.defaultFizzChargeRate = 10
+        self.fizzChargeRate = -10
+        self.fizzMaxSafe = 1000
+        self.fizzMax = 1250
+        self.sprayRange = 512
+        self.angleRange = math.pi/16
     end
 end
 
@@ -43,15 +59,36 @@ function LevelState:update(dt)
     self:checkBounds()
     for i,enemy in ipairs(self.enemies) do
         enemy:update(dt)
+        if not(enemy.isAlive) then
+            table.remove(self.enemies,i)
+        end
     end
+    if next(self.enemies) == nil then
+        -- print("A winner is you")
+        GameState.switch(VictoryState,self.level+1,self.monsterColour)
+    end
+    self:fizzCheck(dt)
+    self.cam:lookAt(self.monster.x,self.monster.y)
+    if self.angleTimer == 5 then
+        self.previousAngle = self.monster.theta
+        self.angleTimer = 0
+    end
+    self.angleTimer = self.angleTimer + 1
+end
+
+function LevelState:fizzCheck(dt)
     if self.firing and 0 < self.fizzCharge then
         self.fizzChargeRate = -10
         self:checkEnemySprayed()
     else
         if 100 <= self.lastKeyTimer then
-            self.fizzChargeRate = -3
+            self.fizzChargeRate = -self.defaultFizzChargeRate
         elseif 30 <= self.lastKeyTimer then
             self.fizzChargeRate = 0
+        end
+        if math.pi/4 <= math.abs(self.monster.theta - self.previousAngle) then
+            self.fizzChargeRate = self.defaultFizzChargeRate
+            self.lastKeyTimer = 0
         end
     end
     self.fizzCharge = self.fizzCharge + self.fizzChargeRate
@@ -68,7 +105,6 @@ function LevelState:update(dt)
     if 1 <= self.fizzPercent then
         self.fizzPercent = 1
     end
-    self.cam:lookAt(self.monster.x,self.monster.y)
 end
 
 function LevelState:draw()
@@ -80,9 +116,26 @@ function LevelState:draw()
     end
     self.monster:draw()
     self.cam:detach()
+    if self.firing and 0 < self.fizzCharge then
+        local w,h = love.graphics:getWidth()/2,love.graphics:getHeight()/2
+        local t = self.monster.theta-math.pi/2
+        local sprayVertices = {w+64*math.cos(t),h+64*math.sin(t),
+                            w+self.sprayRange*math.cos(t-self.angleRange),h+self.sprayRange*math.sin(t-self.angleRange),
+                            w+self.sprayRange*math.cos(t+self.angleRange),h+self.sprayRange*math.sin(t+self.angleRange),
+                        }
+        if self.monsterColour == 'blue' then
+            love.graphics.setColor(0,0,255)
+        elseif self.monsterColour == 'red' then
+            love.graphics.setColor(255,0,0)
+        else
+            love.graphics.setColor(0,255,0)
+        end
+        love.graphics.polygon('fill',sprayVertices)
+    end
+    love.graphics.setColor(255,255,255)
     self:drawGauge(self.fizzCharge,self.fizzMax)
     love.graphics.setColor(0,255,0)
-    love.graphics.print("LEVEL STATE",0,0)
+    love.graphics.print("LEVEL "..self.level,0,0)
 end
 
 function LevelState:drawGauge(currentFizz,maxFizz)
@@ -101,11 +154,15 @@ function LevelState:drawGauge(currentFizz,maxFizz)
 end
 
 function LevelState:checkBounds()
-     if self.monster.x<= 0 or self.map:getWidth() <= self.monster.x then
-        -- print("MONSTER IS LOSING")
+    if self.monster.x <= 0 then
+        self.monster.x = 0
+    elseif self.map:getWidth() <= self.monster.x then
+        self.monster.x = self.map:getWidth()
     end
-    if self.monster.y <= 0 or self.map:getHeight() <= self.monster.y then
-        -- print("MONSTER IS LOSING")
+    if self.monster.y <= 0 then
+        self.monster.y = 0
+    elseif self.map:getHeight() <= self.monster.y then
+        self.monster.y = self.map:getHeight()
     end
 end
 
@@ -117,7 +174,8 @@ function LevelState:checkEnemySprayed()
             if math.pi <= enemyAngle then
                 enemyAngle = enemyAngle - 2*math.pi
             end
-            if self.monster.theta - math.pi/8 <= enemyAngle and enemyAngle <= self.monster.theta + math.pi/8 then
+            local enemyDist = math.dist(onScreenX,onScreenY,love.graphics:getWidth()/2,love.graphics:getHeight()/2)
+            if self.monster.theta - self.angleRange <= enemyAngle and enemyAngle <= self.monster.theta + self.angleRange and enemyDist <= self.sprayRange then
                 local enemyAngle = enemyAngle-math.pi/2
                 if enemyAngle <= -math.pi then
                     enemyAngle = enemyAngle + 2*math.pi
@@ -129,13 +187,13 @@ function LevelState:checkEnemySprayed()
 end
 
 function LevelState:enterMenu()
-    GameState.push(self.menu)
+    GameState.push(MenuState)
 end
 
 function LevelState:keypressed(key)
     if key == 'w' or key == 'up' or key == 'a' or key == 'left' or key == 's' or key == 'down' or key == 'd' or key == 'right' then
         if self.lastKeyTimer <= 10 then
-            self.fizzChargeRate = 3
+            self.fizzChargeRate = self.defaultFizzChargeRate
         else
             self.fizzChargeRate = 0
         end
@@ -153,7 +211,7 @@ function LevelState:mousepressed(x, y, button)
         local mouseY = y
         local r = math.dist(mouseX,mouseY,love.graphics:getWidth()/2,love.graphics:getHeight()/2)
         local theta = -math.angle(love.graphics:getWidth()/2,love.graphics:getHeight()/2,mouseX,mouseY)
-        print("RELEASE THOSE MONSTER JUICES")
+        -- print("RELEASE THOSE MONSTER JUICES")
         self.firing = true
     end
 end
@@ -164,7 +222,7 @@ end
 
 function LevelState:focus(f)
     if not f then
-        GameState.push(self.menu)
+        GameState.push(MenuState)
     end
 end
 

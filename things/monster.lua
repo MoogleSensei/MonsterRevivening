@@ -5,13 +5,8 @@ Monster.x = love.graphics:getWidth()/2
 Monster.y = love.graphics:getHeight()/2
 Monster.firing = false
 Monster.theta = 0
-if monsterColour == "blue" then
-
-elseif monsterColour == "red" then
-
-else
-    Monster.image = love.graphics.newImage('assets/greenMonster.png')
-end
+Monster.image = love.graphics.newImage('assets/greenMonster.png')
+Monster.sprayImage = love.graphics.newImage('assets/greenSpray.png')
 Monster.width = Monster.image:getWidth()
 Monster.height = Monster.image:getHeight()
 
