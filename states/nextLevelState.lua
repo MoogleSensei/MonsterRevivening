@@ -8,8 +8,11 @@ local nextLevelScreen	= love.graphics.newImage('assets/nextLevelScreen.png')
 local level 			= 0
 local monsterColour		= 'blue'
 local score 			= 0
+local nextSFX = love.audio.newSource("assets/next.wav", "static")
 
 function NextLevelState:enter(previous, oldLevel, oldMonsterColour, oldScore)
+	nextSFX:setVolume(globalVolume)
+	nextSFX:play()
 	level = oldLevel
 	monsterColour = oldMonsterColour
 	score = oldScore
@@ -34,9 +37,11 @@ function NextLevelState:mousereleased(x, y, mouseButton)
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
 				if button.name == 'continue' then
+					nextSFX:stop()
 					GameState.switch(LevelState,level,monsterColour,score)
 				end
 				if button.name == 'mainMenu' then
+					nextSFX:stop()
 					GameState.switch(StartScreenState)
 				end
 				if button.name == 'quit' then

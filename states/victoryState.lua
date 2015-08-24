@@ -5,8 +5,11 @@ local quitButton		= require('things/quitButton')
 local arrayButtons		= {mainMenuButton, quitButton}
 local victoryScreen		= love.graphics.newImage('assets/victoryScreen.png')
 local score 			= 0
+local winSFX = love.audio.newSource("assets/win.wav", "static")
 
 function VictoryState:enter(previous, oldScore)
+	winSFX:setVolume(globalVolume)
+	winSFX:play()
 	local yCoord = love.graphics:getHeight()-96
 	mainMenuButton.x,mainMenuButton.y = 32,yCoord
 	quitButton.x,quitButton.y = love.graphics:getWidth()-quitButton.width-32,yCoord
@@ -28,6 +31,7 @@ function VictoryState:mousereleased(x, y, mouseButton)
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
 				if button.name == 'mainMenu' then
+					winSFX:stop()
 					GameState.switch(ChooseColorState)
 				end
 				if button.name == 'quit' then

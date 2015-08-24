@@ -1,7 +1,20 @@
 local LevelState    = class({})
 local Sleeper       = require('things/sleeper')
+local unleashSFX = love.audio.newSource("assets/unleash.wav", "static")
+local shakeSFX = love.audio.newSource("assets/shake.wav", "static")
+local asplodeSFX = love.audio.newSource("assets/asplode.wav", "static")
+local spraySFX = love.audio.newSource("assets/spray.wav", "static")
 
 function LevelState:enter(previous, level, monsterColour, score)
+    unleashSFX:setVolume(globalVolume)
+    shakeSFX:setVolume(globalVolume/2)
+    asplodeSFX:setVolume(globalVolume)
+    spraySFX:setVolume(globalVolume/2)
+    unleashSFX:play()
+    while unleashSFX:isPlaying() do
+        -- Do nothing
+    end
+    coughSFX:play()
     self.score = score
     self.lastKeyTimer = 0
     self.monster = require('things/monster')
@@ -146,6 +159,13 @@ function LevelState:enter(previous, level, monsterColour, score)
 end
 
 function LevelState:update(dt)
+    shakeSFX:setVolume(globalVolume)
+    asplodeSFX:setVolume(globalVolume)
+    if not(coughSFX:isPlaying()) and chooseMusic then
+        musicSFX:play()
+    else
+        musicSFX:stop()
+    end
     self.monster:pointMonsterToMouse()
     self.lastKeyTimer = self.lastKeyTimer + 1
     if love.keyboard.isDown('w') or love.keyboard.isDown('up')      then self.monster:moveMonster('up') end
@@ -167,6 +187,11 @@ function LevelState:update(dt)
         end
     end
     if next(self.enemies) == nil then
+        musicSFX:stop()
+        unleashSFX:stop()
+        shakeSFX:stop()
+        asplodeSFX:stop()
+        spraySFX:stop()
         if self.level == 5 then
             self.score = self.score + 1000
             GameState.switch(VictoryState,self.score)
@@ -197,10 +222,21 @@ function LevelState:fizzCheck(dt)
             self.isBusted = false
         end
     else
+        if 0 < self.fizzChargeRate then
+            if not(shakeSFX:isPlaying()) then
+                shakeSFX:play()
+            end
+        else
+            shakeSFX:stop()
+        end
         if self.firing and 0 < self.fizzCharge then
+            if not(spraySFX:isPlaying()) then
+                spraySFX:play()
+            end
             self.fizzChargeRate = self.defaultFizzSprayRate
             self:checkEnemySprayed()
         else
+            spraySFX:stop()
             if 100 <= self.lastKeyTimer then
                 if not(self.canLoseFizzNaturally) then
                     self.fizzChargeRate = 0
@@ -222,6 +258,8 @@ function LevelState:fizzCheck(dt)
             self.fizzChargeRate = -3*self.defaultFizzChargeRate
             self.isBusted = true
             self.bustedTimer = 0
+            shakeSFX:stop()
+            asplodeSFX:play()
         end
     end
     self.fizzPercent = self.fizzCharge/self.fizzMaxSafe
@@ -336,6 +374,9 @@ function LevelState:checkEnemySprayed()
 end
 
 function LevelState:enterMenu()
+    shakeSFX:stop()
+    spraySFX:stop()
+    asplodeSFX:stop()
     GameState.push(MenuState)
 end
 

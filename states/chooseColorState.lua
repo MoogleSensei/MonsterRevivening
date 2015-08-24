@@ -12,8 +12,11 @@ local backButton				= require('things/backButton')
 local chooseButton				= require('things/chooseButton')
 local arrayButtons				= {blueButton,redButton,greenButton,orangeButton,purpleButton,yellowButton,
 								whiteButton,javaButton,backButton,chooseButton}
+local chooseSFX = love.audio.newSource("assets/choose.wav", "static")
 
 function ChooseColorState:enter()
+	chooseSFX:setVolume(globalVolume)
+	chooseSFX:play()
 	local yCoord = 64
 	blueButton.x,blueButton.y = 64,yCoord
 	redButton.x,redButton.y = 64,yCoord+160
@@ -62,8 +65,10 @@ function ChooseColorState:mousereleased(x, y, mouseButton)
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
 				if button.name == 'choose' then
+					chooseSFX:stop()
 					GameState.switch(LevelState,1,self.monsterColour,0)
 				elseif button.name == 'back' then
+					chooseSFX:stop()
 					GameState.switch(StartScreenState)
 				else
 					self.monsterColour = button.name

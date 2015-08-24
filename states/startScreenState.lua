@@ -5,8 +5,11 @@ local howToButton			= require('things/howToButton')
 local quitButton			= require('things/quitButton')
 local arrayButtons			= {playButton,howToButton,quitButton}
 local startScreen			= love.graphics.newImage('assets/startScreen.png')
+local arenaSFX = love.audio.newSource("assets/arena.wav", "static")
 
 function StartScreenState:enter()
+	arenaSFX:setVolume(globalVolume)
+	arenaSFX:play()
 	local yCoord = love.graphics:getHeight()/2+64
 	for i,button in ipairs(arrayButtons) do
 		button.x,button.y = 64,yCoord
@@ -27,6 +30,7 @@ function StartScreenState:mousereleased(x, y, mouseButton)
 		for i,button in ipairs(arrayButtons) do
 			if (button.x <= x and x <= button.x + button.width) and (button.y <= y and y <= button.y + button.height) then
 				if button.name == 'play' then
+					arenaSFX:stop()
 					GameState.switch(ChooseColorState)
 				end
 				if button.name == 'howTo' then

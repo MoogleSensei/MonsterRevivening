@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"music",
+				"musicSFX"
+			],
+			[
+				"mus",
+				"musicSFX"
+			],
+			[
+				"unl",
+				"unleashSFX"
+			],
+			[
+				"as",
+				"asplode"
+			],
+			[
+				"shak",
+				"shakeSFX"
+			],
+			[
+				"arena",
+				"arenaSFX"
+			],
+			[
+				"choo",
+				"chooseSFX"
+			],
+			[
 				"main",
 				"mainMenuButton"
 			],
@@ -175,7 +203,39 @@
 			"file": "main.lua",
 			"settings":
 			{
-				"buffer_size": 1210,
+				"buffer_size": 1366,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "states/startScreenState.lua",
+			"settings":
+			{
+				"buffer_size": 1387,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "states/chooseColorState.lua",
+			"settings":
+			{
+				"buffer_size": 3570,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "states/levelState.lua",
+			"settings":
+			{
+				"buffer_size": 16647,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "conf.lua",
+			"settings":
+			{
+				"buffer_size": 223,
 				"line_ending": "Windows"
 			}
 		}
@@ -224,6 +284,14 @@
 	},
 	"file_history":
 	[
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/states/menuState.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/states/nextLevelState.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/states/victoryState.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/things/volumeDownButton.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/things/volumeUpButton.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/things/musicButton.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/states/howToState.lua",
+		"/C/Users/MoogleSensei/Desktop/monsterrevivening/conf.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/things/monster.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/states/levelState.lua",
 		"/C/Users/millersm/Desktop/monsterrevivening/states/nextLevelState.lua",
@@ -291,6 +359,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Up",
+			"music",
+			"mainMenu",
 			"Victory",
 			"howTo",
 			"sprayImage",
@@ -353,15 +424,123 @@
 					"file": "main.lua",
 					"settings":
 					{
-						"buffer_size": 1210,
+						"buffer_size": 1366,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								110,
-								110
+								311,
+								311
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 72.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "states/startScreenState.lua",
+					"settings":
+					{
+						"buffer_size": 1387,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								387,
+								387
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "states/chooseColorState.lua",
+					"settings":
+					{
+						"buffer_size": 3570,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1541,
+								1541
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 792.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "states/levelState.lua",
+					"settings":
+					{
+						"buffer_size": 16647,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								343,
+								343
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "conf.lua",
+					"settings":
+					{
+						"buffer_size": 223,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								223,
+								223
 							]
 						],
 						"settings":

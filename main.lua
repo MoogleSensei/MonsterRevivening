@@ -17,8 +17,12 @@ LevelState			= require('states/levelState')
 MenuState 			= require('states/menuState')
 NextLevelState 		= require('states/nextLevelState')
 VictoryState 		= require('states/victoryState')
-volumesList			= {[0] = 0, [1] = 0.1, [2] = 0.2, [3] = 0.3}
-volume				= 5	-- Initially volume set at 50%
+globalVolume		= 1	-- Initially volume set at 100%
+musicSFX 			= love.audio.newSource("assets/music.wav", "static")
+musicSFX:setLooping(true)
+musicSFX:setVolume(globalVolume)
+coughSFX 			= love.audio.newSource("assets/cough.wav", "static")
+chooseMusic			= true
 
 function love.load()
 	GameState.registerEvents()
